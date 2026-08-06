@@ -1,0 +1,9 @@
+[submodule "giise2ebench-st-fullteaching"]
+	path = giise2ebench-st-fullteaching
+	url = https://github.com/augustocristian/giise2ebench-st-fullteaching
+[submodule "giise2ebench-st-climanuvem"]
+	path = giise2ebench-st-climanuvem
+	url = https://github.com/augustocristian/giise2ebench-st-climanuvem.git
+[submodule "giise2ebench-st-devorapp"]
+	path = giise2ebench-st-devorapp
+	url = https://github.com/augustocristian/giise2ebench-st-devorapp
