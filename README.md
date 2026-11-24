@@ -60,14 +60,14 @@ Every suite covers the same scenarios (the requirements in `docs/`) with its own
 | **System under test** | `sut/` | Application source, Dockerfiles and Docker Compose files. Upstream documentation in `sut/README.md` |
 | **Deployment scripts** | `deploy.sh` (Linux/macOS), `deploy.ps1` (Windows), at the repository root | Wrappers over Docker Compose; see [Deployment](#deployment-scripts) |
 | **Test suites** | `selenium-java/`, `cypress-js/`, `playwright-csharp/`, `puppeteer-python/` | Each one has its own `README.md` with prerequisites, configuration and run commands |
-| **Test data** | Per suite: `src/test/resources/` (Selenium), `cypress/fixtures/` (Cypress), `Resources/` (Playwright), `tests/resources/` (Puppeteer) | Test accounts are loaded from a CSV; the `*.template.csv` is versioned, the `*.local.csv` is git-ignored |
+| **Test data** | Per suite: `src/test/resources/` (Selenium), `cypress/fixtures/` (Cypress), `Resources/` (Playwright), `tests/resources/` or `resources/inputs/` (Puppeteer) | Test accounts are loaded from a CSV; the `*.template.csv` is versioned, the `*.local.csv` is git-ignored |
 | **CI/CD** | `.github/workflows/` | Builds the SUT images once and runs every suite in parallel, each on its own runner and its own SUT instance |
 
 ### Deployment scripts
 
 | Repository | Script | What it does |
 |---|---|---|
-| FullTeaching | `setup-sut.sh` / `setup-sut.ps1`, then `deploy.sh` / `deploy.ps1` | `setup-sut` clones [`giis-uniovi/retorch-st-fullteaching`](https://github.com/giis-uniovi/retorch-st-fullteaching) and splits it into `sut/` and `selenium-java/` (both git-ignored, fetched on demand). `deploy` delegates to `selenium-java/deploy-sut.sh` (`deploy.ps1 -Down` / `deploy.sh down` stops it). The SUT answers on `https://localhost:5000` |
+| FullTeaching | `setup-sut.sh` / `setup-sut.ps1`, then `deploy.sh` / `deploy.ps1` | `setup-sut` clones [`giis-uniovi/retorch-st-fullteaching`](https://github.com/giis-uniovi/retorch-st-fullteaching) and splits it into `sut/` and `selenium-java/` (both git-ignored, fetched on demand). `deploy` delegates to `selenium-java/deploy-sut.sh` (`deploy.ps1 -Down` / `deploy.sh down` stops it). The SUT answers on `https://localhost:5000`. CI and the Cypress, Playwright and Puppeteer suites run against `sut/docker-compose.yml` plus `docker-compose.sut-openvidu.yml` (an override that runs a compatible OpenVidu); see the repository's README |
 | DevorApp | `deploy.sh` / `deploy.ps1` | Options `--mode docker\|native`, `--component all\|backend\|frontend`, `--dev` (dev stack with hot reload), `--skip-tests`, `--apk`, `--stop` (PowerShell: `-Dev`). The Compose files are in `sut/` (`docker-compose.yml` + `docker-compose.dev.override.yml`) |
 | ClimaNuvem | `deploy.sh` / `deploy.ps1` | `backend`, `frontend`, `all` or `down [--volumes]`. The Compose files are in `sut/backend/`; the test stack (Firebase emulator, test mode) is in `sut/docker-compose.test.yml` and in `selenium-java/scripts/sut-compose.sh` |
 
@@ -103,7 +103,7 @@ Besides the E2E suites, the SUT has its own **component tests** (unit/integratio
 | `sut/` | Fetched with `setup-sut` (git-ignored) | Committed | Committed |
 | `selenium-java/` | Fetched with `setup-sut` (git-ignored) | Committed | Committed |
 | `cypress-js/`, `playwright-csharp/` | Committed | Committed | Committed |
-| `puppeteer-python/` | Not present | Committed | Committed |
+| `puppeteer-python/` | Committed | Committed | Committed |
 | Test layers | UI/system only (courses, forum, links, REST operations, chat and video sessions) | API + UI | API + UI (login, register, profile, image analysis) |
 | CI workflow | `ci.yml` | `ci.yml` | `ci-cd.yml` (also publishes docs and the Android APK) |
 
